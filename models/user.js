@@ -14,6 +14,10 @@ const UserSchema = new mongoose.Schema(
         },
         role: {
             type: mongoose.Types.ObjectId
+        },
+        active: {
+            type: Boolean,
+            default: false
         }
     },
     {
