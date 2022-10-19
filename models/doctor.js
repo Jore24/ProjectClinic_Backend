@@ -18,9 +18,15 @@ const DoctorSchema = new mongoose.Schema(
         rne: {
             type: String
         },
-        id_user: {
-            type: mongoose.Types.ObjectId
+        user: {
+            type: mongoose.Types.ObjectId,
+            ref: 'user'
         },
+
+    },
+    {
+        timestamps: true,
+        versionKey: false
 
     }
 

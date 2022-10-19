@@ -13,7 +13,8 @@ const UserSchema = new mongoose.Schema(
 
         },
         role: {
-            type: mongoose.Types.ObjectId
+            type: mongoose.Types.ObjectId,
+            ref: 'role'
         },
         active: {
             type: Boolean,

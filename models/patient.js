@@ -5,10 +5,10 @@ const PatientSchema = new mongoose.Schema(
         fullname: {
             type: String
         },
-        document_type: {
+        documentType: {
             type: String
         },
-        number_document: {
+        documentNumber: {
             type: Number
         },
         sex: {
@@ -17,18 +17,24 @@ const PatientSchema = new mongoose.Schema(
         age: {
             type: Number
         },
-        birth_date: {
+        birthDate: {
             type: Date
         },
-        cell_phone: {
+        phone: {
             type: Number
         },
         location: {
             type: String
         },
-        id_user: {
-            type: mongoose.Types.ObjectId
+        user: {
+            type: mongoose.Types.ObjectId,
+            ref: 'user'
         }
+
+    },
+    {
+        timestamps: true,
+        versionKey: false
 
     }
 );

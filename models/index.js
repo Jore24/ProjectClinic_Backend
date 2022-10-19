@@ -31,15 +31,19 @@ const dbConnect = () => {
 dbConnect();
 
 
+/**
+ * const obtenerPacientes = async (req, res) => {
 
-const obtenerPacientes = async (req, res) => {
+    const result = await Exam.find().populate('patient', 'fullname document_type')
+                                    .populate('doctor', 'fullname ').sort({ $natural: -1 });
 
-    const result = await Exam.find().populate('id_patient', 'fullname document_type')
-                                    .populate('id_doctor', 'fullname ').sort({ $natural: -1 });
-    console.log(result[0].id_patient.fullname);
+    console.log(result);                                
+    console.log(result[0].patient.fullname);
 }
 
 obtenerPacientes()
+ */
+
 
 
 

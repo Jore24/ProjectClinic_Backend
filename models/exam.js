@@ -17,14 +17,19 @@ const ExamSchema = new mongoose.Schema(
         sample: {
             type: String
         },
-        id_patient: {
+        patient: {
             type: mongoose.Types.ObjectId,
             ref: 'patient'
         },
-        id_doctor: {
+        doctor: {
             type: mongoose.Types.ObjectId,
             ref: 'doctor'
         },
+    },
+    {
+        timestamps: true,
+        versionKey: false
+
     }
 );
 const Exam = new mongoose.model('exam', ExamSchema);
