@@ -1,10 +1,11 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const DoctorSchema = new mongoose.Schema(
   {
     fullname: {
       type: String,
     },
+
     cell_phone: {
       type: Number,
     },
@@ -12,15 +13,18 @@ const DoctorSchema = new mongoose.Schema(
     specialty: {
       type: String,
     },
+
     cmp: {
       type: String,
     },
+
     rne: {
       type: String,
     },
+
     user: {
       type: mongoose.Types.ObjectId,
-      ref: "user",
+      ref: 'user',
     },
   },
   {
@@ -28,4 +32,4 @@ const DoctorSchema = new mongoose.Schema(
     versionKey: false,
   }
 );
-export const Doctor = new mongoose.model("doctor", DoctorSchema);
+export const Doctor = new mongoose.model('doctor', DoctorSchema);
