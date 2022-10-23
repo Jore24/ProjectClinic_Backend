@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const UserSchema = new mongoose.Schema(
   {
@@ -9,13 +9,33 @@ const UserSchema = new mongoose.Schema(
     password: {
       type: String,
     },
+
     role: {
-      type: mongoose.Types.ObjectId,
-      ref: "role",
+      type: String,
+      enum: {
+        values: ['Patient', 'Doctor'],
+        message: 'Role is not valid',
+      },
     },
-    active: {
+
+    isActive: {
       type: Boolean,
       default: false,
+    },
+
+    key: {
+      type: String,
+      default: "asdasd",
+    },
+
+    patient: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'patient',
+    },
+
+    doctor: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'doctor',
     },
   },
   {
@@ -23,4 +43,4 @@ const UserSchema = new mongoose.Schema(
     versionKey: false,
   }
 );
-export const User = new mongoose.model("user", UserSchema);
+export const User = new mongoose.model('user', UserSchema);
