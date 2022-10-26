@@ -1,7 +1,8 @@
-import { createNewUser, findUserByEmail } from '../services/user.js';
-import { createNewPatient } from '../services/patient.js';
+import { createUser, findUserByEmail } from '../services/user.js';
+import { createPatient } from '../services/patient.js';
+import { createDoctor } from '../services/doctor.js';
 
-const userRegister = async (req, res) => {
+const userPatientRegister = async (req, res) => {
   const { email, password, ...dataPatient } = req.body;
 
   try {
@@ -15,8 +16,13 @@ const userRegister = async (req, res) => {
       });
     }
 
-    user = await createNewUser(email, password);
-    patient = await createNewPatient(dataPatient, user.id);
+    user = await createUser(email, password);
+    patient = await createPatient(dataPatient, user.id);
+
+    user.patient = patient.id;
+    user.patient = '6359b582f48e7e61e9160e46';
+    patient.save();
+    user.save();
 
     res.json({
       hasError: false,
@@ -25,6 +31,45 @@ const userRegister = async (req, res) => {
       msg: 'User created successfully',
     });
   } catch (error) {
+    console.log(error);
+    res.status(400).json({
+      hasError: true,
+      msg: 'Error in the server',
+    });
+  }
+};
+
+const userDoctorRegister = async (req, res) => {
+  const { email, password, ...dataDoctor } = req.body;
+
+  try {
+    let user = await findUserByEmail(email);
+    let doctor;
+
+    if (user) {
+      return res.status(400).json({
+        hasError: false,
+        msg: 'User already exists',
+      });
+    }
+
+    user = await createUser(email, password);
+    doctor = await createDoctor(dataDoctor, user.id);
+
+    user.doctor = doctor.id;
+    user.role = 'Doctor';
+
+    doctor.save();
+    user.save();
+
+    res.json({
+      hasError: false,
+      uid: user.id,
+      fullname: doctor.fullname,
+      msg: 'User created successfully',
+    });
+  } catch (error) {
+    console.log(error);
     res.status(400).json({
       hasError: true,
       msg: 'Error in the server',
@@ -34,6 +79,7 @@ const userRegister = async (req, res) => {
 
 const userLogin = async (req, res) => {
   const { email, password } = req.body;
+  res.json({ email, password });
 };
 
 const confirmAccount = async (req, res) => {
@@ -59,4 +105,4 @@ const confirmAccount = async (req, res) => {
   });
 };
 
-export { userRegister, userLogin };
+export { userPatientRegister, userDoctorRegister, userLogin };

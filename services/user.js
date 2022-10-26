@@ -11,9 +11,8 @@ export const findUserByKey = async key => {
   return user;
 };
 
-export const createNewUser = async (email, password) => {
+export const createUser = async (email, password) => {
   const user = new User({ email, password });
   user.password = hashPassword(password);
-  user.role = '63521b514347284f606bdd9a';
-  return await user.save();
+  return user;
 };

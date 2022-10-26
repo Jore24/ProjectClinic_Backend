@@ -4,10 +4,12 @@ const UserSchema = new mongoose.Schema(
   {
     email: {
       type: String,
+      required: true,
     },
 
     password: {
       type: String,
+      required: true,
     },
 
     role: {
@@ -16,6 +18,7 @@ const UserSchema = new mongoose.Schema(
         values: ['Patient', 'Doctor'],
         message: 'Role is not valid',
       },
+      default: 'Patient',
     },
 
     isActive: {
@@ -25,7 +28,7 @@ const UserSchema = new mongoose.Schema(
 
     key: {
       type: String,
-      default: "asdasd",
+      default: 'asdasd',
     },
 
     patient: {

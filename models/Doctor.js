@@ -4,22 +4,27 @@ const DoctorSchema = new mongoose.Schema(
   {
     fullname: {
       type: String,
+      required: true,
     },
 
-    cell_phone: {
+    phone: {
       type: Number,
+      required: true,
     },
 
-    specialty: {
+    speciality: {
       type: String,
+      required: true,
     },
 
     cmp: {
       type: String,
+      required: true,
     },
 
     rne: {
       type: String,
+      required: true,
     },
 
     user: {
