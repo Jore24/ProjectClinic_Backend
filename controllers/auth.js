@@ -1,7 +1,8 @@
-import { createUser, findUserByEmail } from '../services/user.js';
+import { createUser, findUserByEmail, checkOut } from '../services/user.js';
 import { createPatient } from '../services/patient.js';
 import { createDoctor } from '../services/doctor.js';
-
+import { tokenSign, verifyToken, decodeSign } from '../utils/token.js';
+import { handleHttpError, handleErrorResponse } from '../utils/handleError.js';
 const userPatientRegister = async (req, res) => {
   const { email, password, ...dataPatient } = req.body;
 
@@ -20,7 +21,7 @@ const userPatientRegister = async (req, res) => {
     patient = await createPatient(dataPatient, user.id);
 
     user.patient = patient.id;
-    user.patient = '6359b582f48e7e61e9160e46';
+    //user.patient = '6359b582f48e7e61e9160e46';
     patient.save();
     user.save();
 
@@ -78,8 +79,41 @@ const userDoctorRegister = async (req, res) => {
 };
 
 const userLogin = async (req, res) => {
-  const { email, password } = req.body;
-  res.json({ email, password });
+  try {
+    const { email, password } = req.body;
+
+    let user = await findUserByEmail(email);
+    if (!user) {
+      handleErrorResponse(res, "Email not exist", 402);
+      return;
+    }
+
+    let check = await checkOut(password, user.password);
+    if (!check) {
+      handleErrorResponse(res, "Password not correct", 402);
+      return;
+    }
+    user.set('password', undefined, {strict: false});
+    /**       
+     if (user.isActive === false) {
+      handleErrorResponse(res, "User not active", 402);
+      return;
+    }
+     */
+    const tokenJwt = await tokenSign(user);
+    const data = {
+      token: tokenJwt,
+      user: user,
+    };
+    res.send({ data });
+
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({
+      hasError: true,
+      msg: 'Error in the server',
+    });
+  }
 };
 
 const confirmAccount = async (req, res) => {
