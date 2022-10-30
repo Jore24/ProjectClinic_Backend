@@ -1,7 +1,7 @@
 import { createUser, findUserByEmail, checkOut } from '../services/user.js';
 import { createPatient } from '../services/patient.js';
 import { createDoctor } from '../services/doctor.js';
-import { tokenSign, verifyToken, decodeSign } from '../utils/createJwt.js';
+import { tokenSign } from '../utils/createJwt.js';
 import { handleHttpError, handleErrorResponse } from '../utils/handleError.js';
 const userPatientRegister = async (req, res) => {
   const { email, password, ...dataPatient } = req.body;
