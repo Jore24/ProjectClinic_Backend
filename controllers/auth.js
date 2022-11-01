@@ -1,8 +1,10 @@
-import { createUser, findUserByEmail, checkOut } from '../services/user.js';
+import { createUser, findUserByEmail } from '../services/user.js';
 import { createPatient } from '../services/patient.js';
 import { createDoctor } from '../services/doctor.js';
 import { tokenSign } from '../utils/createJwt.js';
 import { handleHttpError, handleErrorResponse } from '../utils/handleError.js';
+import { comparePassword } from '../utils/encrypt.js';
+
 const userPatientRegister = async (req, res) => {
   const { email, password, ...dataPatient } = req.body;
 
@@ -83,30 +85,23 @@ const userLogin = async (req, res) => {
     const { email, password } = req.body;
 
     let user = await findUserByEmail(email);
+
     if (!user) {
-      handleErrorResponse(res, "Email not exist", 402);
-      return;
+      return handleErrorResponse(res, 'Email not exist', 402);
     }
 
-    let check = await checkOut(password, user.password);
+    let check = comparePassword(password, user.password);
+
     if (!check) {
-      handleErrorResponse(res, "Password not correct", 402);
-      return;
+      return handleErrorResponse(res, 'Password not correct', 402);
     }
-    user.set('password', undefined, {strict: false});
-    /**       
-     if (user.isActive === false) {
-      handleErrorResponse(res, "User not active", 402);
-      return;
-    }
-     */
+
     const tokenJwt = await tokenSign(user);
-    const data = {
+
+    res.json({
       token: tokenJwt,
       user: user,
-    };
-    res.send({ data });
-
+    });
   } catch (error) {
     console.log(error);
     res.status(400).json({

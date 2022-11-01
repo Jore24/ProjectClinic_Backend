@@ -1,8 +1,8 @@
 import { User } from '../models/index.js';
-import { hashPassword, comparePassword } from '../utils/encrypt.js';
+import { hashPassword } from '../utils/encrypt.js';
 
 export const findUserByEmail = async email => {
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email }).populate("patient");
   return user;
 };
 
@@ -12,11 +12,7 @@ export const findUserByKey = async key => {
 };
 
 export const createUser = async (email, password) => {
-  const user = new User({ email, password }); //consultar
+  const user = new User({ email, password });
   user.password = hashPassword(password);
   return user;
-};
-export const checkOut = async (password, userPassword) => {
-  let check = comparePassword(password, userPassword);
-  return check;
 };
