@@ -24,7 +24,7 @@ const validateRegisterPatient = [
   check('birthDate').exists().notEmpty().isDate(),
   check('phone').exists().notEmpty().isNumeric({ min: 1000000000, max: 9999999999 }),
   check('location').exists().notEmpty(),
-  check('user').exists().isMongoId(),
+  //check('user').exists().isMongoId(),
   (req, res, next) => {
     validateResult(req, res, next);
   },
@@ -36,7 +36,7 @@ const validateRegisterDoctor = [
   check('speciality').exists().notEmpty(),
   check('cmp').exists().notEmpty(),
   check('rne').exists().notEmpty(),
-  check('user').exists().isMongoId(),
+  //check('user').exists().isMongoId(),
 
   (req, res, next) => {
     validateResult(req, res, next);

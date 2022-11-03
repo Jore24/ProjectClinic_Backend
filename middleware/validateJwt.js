@@ -1,28 +1,24 @@
-import jwt from 'jsonwebtoken';
+import { handleErrorResponse, handleHttpError } from '../utils/handleError.js';
+import { verifyToken } from '../utils/createJwt.js';
 
-const jwtValidate = (req, res, next) => {
-  // x-token header
-  const token = req.header('x-token');
-
-  if (!token) {
-    return res.status(401).json({
-      ok: false,
-      msg: 'No token provided',
-    });
-  }
-
+const checkAuth = async (req, res, next) => {
   try {
-    const { uid, fullname } = jwt.verify(token, process.env.SECRET_JWT_SEED);
-
-    req.uid = uid;
-    req.fullname = fullname;
-  } catch (error) {
-    return res.status(401).json({
-      ok: false,
-      msg: 'Invalid token',
-    });
+    if (!req.headers.authorization) {
+        handleErrorResponse(res, "NOT_ALLOW", 409);
+      return;
+    }
+    const token = req.headers.authorization.split(" ").pop();
+    const tokenData = await verifyToken(token);
+    req.role = tokenData.role; //podemos verificar el role del usuario
+    
+    if (tokenData._id) {
+      next();
+    } else {
+      handleErrorResponse(res, "NOT_ALLOW", 409);
+    }
+  } catch (e) {
+    handleHttpError(res, e);
   }
-
-  next();
 };
-export { jwtValidate };
+
+export { checkAuth };

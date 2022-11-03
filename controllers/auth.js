@@ -1,6 +1,7 @@
-import { createUser, findUserByEmail } from '../services/user.js';
+import { createUser, findUserByEmail, findUsers } from '../services/user.js';
 import { createPatient } from '../services/patient.js';
 import { createDoctor } from '../services/doctor.js';
+import { findUser } from '../services/user.js';
 import { tokenSign } from '../utils/createJwt.js';
 import { handleHttpError, handleErrorResponse } from '../utils/handleError.js';
 import { comparePassword } from '../utils/encrypt.js';
@@ -134,4 +135,36 @@ const confirmAccount = async (req, res) => {
   });
 };
 
-export { userPatientRegister, userDoctorRegister, userLogin };
+const getUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const roleLogged = req.role;
+    console.log(roleLogged);
+    const user = await findUser(id);
+
+    if (roleLogged !== 'Doctor') {
+      return handleErrorResponse(res, 'You are not authorized', 401);
+    }
+
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({
+      hasError: true,
+      msg: 'Error in the server',
+    });
+  }
+};
+const getUsers = async (req, res) => {
+  try {
+    const users = await findUsers(); //services
+    res.send({ users });
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({
+      hasError: true,
+      msg: 'Error in the server',
+    });
+  }
+};
+
+export { userPatientRegister, userDoctorRegister, userLogin, getUser, getUsers };

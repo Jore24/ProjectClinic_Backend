@@ -16,3 +16,13 @@ export const createUser = async (email, password) => {
   user.password = hashPassword(password);
   return user;
 };
+
+export const findUser = async (id) => {
+  const user = await User.findById(id);
+  return user;
+
+}
+export const findUsers = async () => {
+  const users = await User.find();
+  return users;
+}
