@@ -5,6 +5,7 @@ import { findUser } from '../services/user.js';
 import { tokenSign } from '../utils/createJwt.js';
 import { handleHttpError, handleErrorResponse } from '../utils/handleError.js';
 import { comparePassword } from '../utils/encrypt.js';
+import { sendEmail } from '../utils/sendEmail.js';
 
 const userPatientRegister = async (req, res) => {
   const { email, password, ...dataPatient } = req.body;
@@ -24,9 +25,10 @@ const userPatientRegister = async (req, res) => {
     patient = await createPatient(dataPatient, user.id);
 
     user.patient = patient.id;
-    //user.patient = '6359b582f48e7e61e9160e46';
     patient.save();
     user.save();
+
+    await sendEmail(user.email, patient.fullname, user.key);
 
     res.json({
       hasError: false,
