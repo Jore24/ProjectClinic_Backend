@@ -1,11 +1,11 @@
-import { listPatients, listPatient, updPatient, delPatient} from "../services/patient.js";
+import { listDoctors, listDoctor, updDoctor, delDoctor } from "../services/doctor.js";
 
-const getPatients = async (req, res) => {
+const getDoctors = async (req, res) => {
     try {
-        const patients = await listPatients();
+        const doctors = await listDoctors();
         res.status(200).json({
             ok: true,
-            patients
+            doctors
         });
     } catch (error) {
         res.status(400).json({
@@ -13,16 +13,15 @@ const getPatients = async (req, res) => {
             msg: 'Error in the server',
         });
     }
-};
+}
 
-const getPatient = async (req, res) => {
-    const { id } = req.params;
-
+const getDoctor = async (req, res) => {
     try {
-        const patient = await listPatient(id);
+        const { id } = req.params;
+        const doctor = await listDoctor(id);
         res.status(200).json({
             ok: true,
-            patient
+            doctor
         });
     } catch (error) {
         res.status(400).json({
@@ -30,37 +29,34 @@ const getPatient = async (req, res) => {
             msg: 'Error in the server',
         });
     }
+}
 
-};
-
-
-const updatePatient = async (req, res) => {
+const updateDoctor = async (req, res) => {
     try {
         const { id } = req.params;
         const body = req.body;
-        const data= await updPatient(id, body);
+        const data= await updDoctor(id, body);
         res.status(200).json({
             ok: true,
             data
         });
-      } catch (e) {
+        } catch (e) {
         res.status(400).send(e);
-      }
-};
+        }
+}
 
-
-const deletePatient = async (req, res) => {
+const deleteDoctor = async (req, res) => {
     try{
         const { id } = req.params;
-        const data = await delPatient(id);
+        const data = await delDoctor(id);
         res.status(200).json({
             ok: true,
             data
         });
-
-    }catch{
+    }
+    catch (e) {
         res.status(400).send(e);
     }
- };
+}
 
-export { getPatients, getPatient, updatePatient, deletePatient };
+export { getDoctors, getDoctor, updateDoctor, deleteDoctor };

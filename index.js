@@ -8,6 +8,7 @@ import { authRouter } from './routes/auth.js';
 import { Chat } from './models/Chat.js';
 import { findUser } from './services/user.js';
 import { patientRouter } from './routes/patient.js';
+import { doctorRouter } from './routes/doctor.js';
 //import { PORT } from "./config.js"; //ya tenemos nuestro port en el process.env.PORT
 
 const app = express();
@@ -25,6 +26,7 @@ app.use(express.json());
 
 app.use('/api/auth', authRouter);
 app.use('/api/patient', patientRouter);
+app.use('/api/doctor', doctorRouter);
 // Aqui le pones las demas
 
 io.on("connection", async (socket) => {
