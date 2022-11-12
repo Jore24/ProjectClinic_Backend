@@ -1,5 +1,3 @@
-import { createTransport } from 'nodemailer';
-
 export const sendEmail = async (email, fullname, key) => {
   const transporter = createTransport({
     host: 'smtp.gmail.com',
@@ -9,8 +7,10 @@ export const sendEmail = async (email, fullname, key) => {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS,
     },
+    tls: {
+      rejectUnauthorized: false,
+    },
   });
-
   await transporter.sendMail({
     from: 'CLINIC',
     to: email,
@@ -21,4 +21,5 @@ export const sendEmail = async (email, fullname, key) => {
             <p>If you didn't create this account, you can ignore this message</p>
         `,
   });
+  //console.log('correo enviado');
 };

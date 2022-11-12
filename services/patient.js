@@ -1,5 +1,11 @@
 import { Patient } from "../models/index.js";
 
+export const findPatient= async (id) => {
+    const patient = await Patient.findById(id);
+    return patient;
+  
+  }
+
 export const createPatient = async (dataPatient, idUser) => {
     const patient = new Patient(dataPatient);
     patient.user = idUser;

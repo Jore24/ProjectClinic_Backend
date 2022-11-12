@@ -1,5 +1,6 @@
 import { listPatients, listPatient, updPatient, delPatient} from "../services/patient.js";
 
+// los doctores pueden ver los pacientes en el sistema
 const getPatients = async (req, res) => {
     try {
         const patients = await listPatients();
@@ -15,6 +16,8 @@ const getPatients = async (req, res) => {
     }
 };
 
+//el doctor puede ver el perfil del paciente
+//el paciente puede ver su perfil
 const getPatient = async (req, res) => {
     const { id } = req.params;
 
@@ -33,7 +36,7 @@ const getPatient = async (req, res) => {
 
 };
 
-
+//el paciente puede actualizar su perfil
 const updatePatient = async (req, res) => {
     try {
         const { id } = req.params;
@@ -48,7 +51,7 @@ const updatePatient = async (req, res) => {
       }
 };
 
-
+//verificar esta función
 const deletePatient = async (req, res) => {
     try{
         const { id } = req.params;

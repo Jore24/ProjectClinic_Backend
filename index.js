@@ -9,7 +9,8 @@ import { Chat } from './models/Chat.js';
 import { findUser } from './services/user.js';
 import { patientRouter } from './routes/patient.js';
 import { doctorRouter } from './routes/doctor.js';
-//import { PORT } from "./config.js"; //ya tenemos nuestro port en el process.env.PORT
+import { examRouter } from './routes/exam.js';
+import { exportPDF } from './utils/generatePDF.js';
 
 const app = express();
 const server = htpp.createServer(app);
@@ -24,11 +25,15 @@ dbConnection();
 app.use(cors());
 app.use(express.json());
 
+
+
 app.use('/api/auth', authRouter);
 app.use('/api/patient', patientRouter);
 app.use('/api/doctor', doctorRouter);
+app.use('/api/exam', examRouter);
 // Aqui le pones las demas
 
+//websocket refactoring
 io.on("connection", async (socket) => {
   
   console.log("a user connected");
@@ -39,6 +44,7 @@ io.on("connection", async (socket) => {
       from: body.from,
       id: body.id 
     },
+    //services
     await new Chat({
       msg: body.body,
       fullname: body.from,

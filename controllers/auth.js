@@ -1,11 +1,28 @@
-import { createUser, findUserByEmail, findUsers } from '../services/user.js';
+import { createUser, findUserByEmail, findUserProfile, findUsers } from '../services/user.js';
 import { createPatient } from '../services/patient.js';
 import { createDoctor } from '../services/doctor.js';
-import { findUser } from '../services/user.js';
 import { tokenSign } from '../utils/createJwt.js';
 import { handleHttpError, handleErrorResponse } from '../utils/handleError.js';
 import { comparePassword } from '../utils/encrypt.js';
 import { sendEmail } from '../utils/sendEmail.js';
+
+const profileUser = async (req, res) => {
+  try {
+    const id = req.id;
+    const user = await findUserProfile(id);
+    console.log(user.role);
+
+    return res.status(200).json({
+      hasError: false,
+      user,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      hasError: true,
+      msg: 'Error in the server',
+    });
+  }
+};
 
 const userPatientRegister = async (req, res) => {
   const { email, password, ...dataPatient } = req.body;
@@ -30,7 +47,7 @@ const userPatientRegister = async (req, res) => {
 
     await sendEmail(user.email, patient.fullname, user.key);
 
-    res.json({
+    return res.json({
       hasError: false,
       uid: user.id,
       fullname: patient.fullname,
@@ -38,7 +55,7 @@ const userPatientRegister = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    res.status(400).json({
+    return res.status(400).json({
       hasError: true,
       msg: 'Error in the server',
     });
@@ -67,7 +84,7 @@ const userDoctorRegister = async (req, res) => {
 
     doctor.save();
     user.save();
-
+    await sendEmail(user.email, doctor.fullname, user.key);
     res.json({
       hasError: false,
       uid: user.id,
@@ -141,13 +158,14 @@ const getUser = async (req, res) => {
   try {
     const { id } = req.params;
     const roleLogged = req.role;
-    console.log(roleLogged);
-    const user = await findUser(id);
-
     if (roleLogged !== 'Doctor') {
       return handleErrorResponse(res, 'You are not authorized', 401);
     }
-
+    const user = await findUser(id);
+    res.status(200).json({
+      hasError: false,
+      user,
+    });
   } catch (error) {
     console.log(error);
     res.status(400).json({
@@ -158,6 +176,10 @@ const getUser = async (req, res) => {
 };
 const getUsers = async (req, res) => {
   try {
+    const roleLogged = req.role;
+    if (roleLogged !== 'Patient') {
+      return handleErrorResponse(res, 'You are not authorized', 401);
+    }
     const users = await findUsers(); //services
     res.send({ users });
   } catch (error) {
@@ -169,4 +191,4 @@ const getUsers = async (req, res) => {
   }
 };
 
-export { userPatientRegister, userDoctorRegister, userLogin, getUser, getUsers };
+export { userPatientRegister, userDoctorRegister, userLogin, getUser, getUsers, profileUser };
