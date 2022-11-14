@@ -6,7 +6,7 @@ const tiempoTranscurrido = Date.now();
 const hoy = new Date(tiempoTranscurrido);
 const dateHoy = hoy.toLocaleDateString();
 const timeHoy = dateHoy.split('/').join('-');
-console.log(timeHoy);
+
 export const sendEmailResult = async (exam) => {
   const { patient, service } = exam;
   const transporter = createTransport({

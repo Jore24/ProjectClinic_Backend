@@ -1,4 +1,4 @@
-import { createUser, findUserByEmail, findUserProfile, findUsers } from '../services/user.js';
+import { createUser, findUserByEmail, findUserProfile, findUsers, findUserByKey, findUser } from '../services/user.js';
 import { createPatient } from '../services/patient.js';
 import { createDoctor } from '../services/doctor.js';
 import { tokenSign } from '../utils/createJwt.js';
@@ -131,27 +131,29 @@ const userLogin = async (req, res) => {
   }
 };
 
-const confirmAccount = async (req, res) => {
+const userConfirm = async (req, res) => {
   const { key } = req.params;
 
-  const user = await findUserByKey(key);
-  // key = 12512341
+  try {
+    const user = await findUserByKey(key);
+    if (!user) {
+      return res.status(400).json({
+        hasError: true,
+        msg: 'El usuario no existe',
+      });
+    }
 
-  if (!user) {
-    return res.status(400).json({
-      hasError: true,
-      msg: 'El key ya expiro',
+    user.isActive = true;
+    user.key = null;
+    await user.save();
+
+    return res.json({
+      hasError: false,
+      msg: 'Cuenta activada correctamente',
     });
+  } catch (error) {
+    console.log(error);
   }
-
-  user.isActive = true;
-  user.key = null;
-  await user.save();
-
-  return res.json({
-    hasError: false,
-    msg: 'Cuenta activada correctamente',
-  });
 };
 
 const getUser = async (req, res) => {
@@ -190,5 +192,22 @@ const getUsers = async (req, res) => {
     });
   }
 };
+const revalidateToken = async (req, res) => {
+  try {
+    const { id } = req;
+    const user = await findUser(id);
+    const tokenJwt = await tokenSign(user);
+    res.json({
+      token: tokenJwt,
+      user: user,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({
+      hasError: true,
+      msg: 'Error in the server',
+    });
+  }
+}
 
-export { userPatientRegister, userDoctorRegister, userLogin, getUser, getUsers, profileUser };
+export { userPatientRegister, userDoctorRegister, userLogin, getUser, getUsers, profileUser, userConfirm, revalidateToken };

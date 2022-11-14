@@ -6,7 +6,7 @@ export const findUserByEmail = async email => {
   return user;
 };
 
-export const findUserByKey = async key => {
+export const findUserByKey = async (key) => {
   const user = await User.findOne({ key });
   return user;
 };
@@ -33,3 +33,4 @@ export const findUsers = async () => {
   const users = await User.find();
   return users;
 }
+
