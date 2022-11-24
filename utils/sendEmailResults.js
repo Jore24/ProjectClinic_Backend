@@ -24,7 +24,7 @@ export const sendEmailResult = async (exam) => {
 
   await transporter.sendMail({
     from: 'CLINIC',
-    to: 'jore24@autonoma.edu.pe', //colocar el email del patient
+    to: 'falvarezl@autonoma.edu.pe', //colocar el email del patient
     subject: 'Check your CLINIC RESULTS',
     text: 'Check your CLINIC account',
     html: `<p>Hello: ${service}, check your RESULTS IN THE CLINIC.</p>

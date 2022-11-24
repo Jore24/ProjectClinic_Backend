@@ -4,64 +4,65 @@ import fs from 'fs';
 //crear un services para hacer populate y tener todos los datos del doctor y paciente
 
 const tiempoTranscurrido = Date.now();
-const hoy = new Date(tiempoTranscurrido); 
+const hoy = new Date(tiempoTranscurrido);
 const dateHoy = hoy.toLocaleDateString();
 const timeHoy = dateHoy.split('/').join('-');
 
 
 export const exportPDF = (data) => {
-  const {result, service, patient} = data;
+  const { result, service, patient } = data;
 
 
   const doc = new PDFDocument();
 
   // Saving the pdf file in root directory.
   //doc.pipe(fs.createWriteStream(timeHoy + '_'+ patient+'.pdf'));
-  doc.pipe(fs. createWriteStream('public/PDF/'+timeHoy + '_'+ patient+'.pdf'));
-
-  // Adding functionality
-  doc.fontSize(27).text('Resultados de tu exam de COVID-19' +patient, {
-    align: 'center',
-    });
-  doc.fontSize(20).text('Datos del paciente', {
-    align: 'center',
-    });
-  doc.fontSize(15).text('Nombre: ' + patient, {
-    align: 'center',
-    });
-  doc.fontSize(15).text('Fecha de nacimiento: ' + patient, {
-    align: 'center',
-    });
-
+  doc.pipe(fs.createWriteStream('public/PDF/' + timeHoy + '_' + patient + '.pdf'));
 
   // Adding an image in the pdf.
-
   try {
-    doc.image('./public/img/covid.png');
+    doc.image('./public/img/pdf.png', 0, 15, { width: 612, height: 765 });
   } catch (error) {
     console.log(error);
-  }
+  };
 
-  doc.addPage().fontSize(15).text('Generating PDF with the help of pdfkit', 100, 100);
 
-  // Apply some transforms and render an SVG path with the
-  // 'even-odd' fill rule
-  doc
-    .scale(0.6)
-    .translate(470, -380)
-    .path('M 250,75 L 323,301 131,161 369,161 177,301 z')
-    .fill('red', 'even-odd')
-    .restore();
+  // Primer cuadro
+  doc.fontSize(11).text('Paciente: Fabian Alvarez', 20, 260);
+  doc.fontSize(11).text('DNI: 32453452', 20, 276);
+  doc.fontSize(11).text('Sexo: MASCULINO', 20, 292);
+  doc.fontSize(11).text('Médico: DOCTOR MUERTE', 20, 308);
+  doc.fontSize(11).text('Servicio: DOMICILIO', 20, 324);
 
-  // Add some text with annotations
-  doc
-    .addPage()
-    .fillColor('blue')
-    .text('The link for GeeksforGeeks website', 100, 100)
+  doc.fontSize(11).text('Historia: 4564745', 190, 276);
+  doc.fontSize(11).text('Edad: 32', 190, 292);
+  doc.fontSize(11).text('F.N.: 24/11/2022', 190, 308);
 
-    .link(100, 100, 160, 27, 'https://www.geeksforgeeks.org/');
+  doc.fontSize(11).text('Prioridad: 1', 325, 260);
+  doc.fontSize(11).text('Pasaporte: SI', 325, 276);
+  doc.fontSize(11).text('Cliente: PARTICULAR)', 325, 292);
+  doc.fontSize(11).text('Localidad: SURCO', 325, 308);
+  doc.fontSize(11).text('Fecha de Toma de Muestra: 22/11/2022', 325, 324,);
 
-  // Finalize PDF file
+  //Segundo cuadro
+  doc.fontSize(10).text('EXAMENES REALIZADOS', 72, 360);
+  doc.fontSize(10).text('CORONAVIRUS SARS COVI-2 PRUEBA ANTIGENO', 15, 372);
+  doc.fontSize(10).text('(Metódo: INMUNOCROMATOGRAFIA)', 50, 385);
+  doc.fontSize(10).text('TIPO DE MUESTRA: HISOPADO NASOFARINGEO', 20, 446);
+
+  doc.fontSize(10).text('RESULTADO ACTUAL', 265, 360);
+  doc.fontSize(10).text('POSITIVO', 286, 455);
+
+  doc.fontSize(10).text('VALOR REFERENCIAL', 405, 360);
+  doc.fontSize(10).text('*Esta prueba es cualitativa,detecta la presencia o ausencia de antigeno del virus SARS-CoV-2 conocido como (COVID-19). Un resultado Positivo indica alta posibilidad de estar en la fase ACTIVA de la enfermedad. La interprentaciòn del resultado debe hacerla el mèdico especialista basada en la informaciòn clìnica del paciente ', 385, 380);
+
+  //Tercer cuadro 
+  doc.fontSize(11).text('VALIDADO POR:', 20, 565);
+  
+  doc.fontSize(11).text('Dra. Lady G. Hernández Huerta', 380, 640);
+  doc.fontSize(11).text('Especialista en patología clínica', 379, 655);
+  doc.fontSize(11).text('CMP: 65313 RNE: 34984', 393, 670);
+
   doc.end();
 };
-// Create a document
+
