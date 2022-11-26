@@ -92,7 +92,6 @@ const userDoctorRegister = async (req, res) => {
       msg: 'User created successfully',
     });
   } catch (error) {
-    console.log(error);
     res.status(400).json({
       hasError: true,
       msg: 'Error in the server',
@@ -115,6 +114,7 @@ const userLogin = async (req, res) => {
     if (!check) {
       return handleErrorResponse(res, 'Password not correct', 402);
     }
+    //validar si es activo o no está acctivo el email
 
     const tokenJwt = await tokenSign(user);
 
@@ -153,6 +153,10 @@ const userConfirm = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
+    res.status(400).json({
+      hasError: true,
+      msg: 'Error in the server',
+    });
   }
 };
 

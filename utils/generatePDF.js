@@ -1,22 +1,22 @@
 import PDFDocument from 'pdfkit';
 import fs from 'fs';
+import { findPatient } from '../services/patient.js';
+import { findUserDoctor } from '../services/user.js';
+import { fecha } from './generateTime.js';
 
-//crear un services para hacer populate y tener todos los datos del doctor y paciente
+const timeHoy = fecha();
 
-const tiempoTranscurrido = Date.now();
-const hoy = new Date(tiempoTranscurrido);
-const dateHoy = hoy.toLocaleDateString();
-const timeHoy = dateHoy.split('/').join('-');
-
-
-export const exportPDF = (data) => {
-  const { result, service, patient } = data;
-
+export const exportPDF = async (data) => {
+  const { patient, doctor } = data;
+  const getPatient = await findPatient(patient);
+  const getDoctor = await findUserDoctor(doctor);
+  //console.log(getPatient)
+  //console.log(getDoctor)
+  //console.log(data)
 
   const doc = new PDFDocument();
 
   // Saving the pdf file in root directory.
-  //doc.pipe(fs.createWriteStream(timeHoy + '_'+ patient+'.pdf'));
   doc.pipe(fs.createWriteStream('public/PDF/' + timeHoy + '_' + patient + '.pdf'));
 
   // Adding an image in the pdf.
@@ -28,10 +28,10 @@ export const exportPDF = (data) => {
 
 
   // Primer cuadro
-  doc.fontSize(11).text('Paciente: Fabian Alvarez', 20, 260);
-  doc.fontSize(11).text('DNI: 32453452', 20, 276);
+  doc.fontSize(11).text(' Paciente: '+ getPatient.fullname, 20, 260);
+  doc.fontSize(11).text(' DNI: '+ getPatient.documentNumber, 20, 276);
   doc.fontSize(11).text('Sexo: MASCULINO', 20, 292);
-  doc.fontSize(11).text('Médico: DOCTOR MUERTE', 20, 308);
+  doc.fontSize(11).text('Médico: '+ getDoctor.doctor.fullname, 20, 308);
   doc.fontSize(11).text('Servicio: DOMICILIO', 20, 324);
 
   doc.fontSize(11).text('Historia: 4564745', 190, 276);

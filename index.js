@@ -31,7 +31,6 @@ app.use('/api/auth', authRouter);
 app.use('/api/patient', patientRouter);
 app.use('/api/doctor', doctorRouter);
 app.use('/api/exam', examRouter);
-// Aqui le pones las demas
 
 //websocket refactoring
 io.on("connection", async (socket) => {

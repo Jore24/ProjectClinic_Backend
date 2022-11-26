@@ -1,14 +1,13 @@
 import { createTransport } from 'nodemailer';
 import { fecha } from './generateTime.js';
+import { findPatient } from '../services/patient.js';
 
-//let timeHoy = fecha();
-const tiempoTranscurrido = Date.now();
-const hoy = new Date(tiempoTranscurrido);
-const dateHoy = hoy.toLocaleDateString();
-const timeHoy = dateHoy.split('/').join('-');
+const timeHoy = fecha();
 
-export const sendEmailResult = async (exam) => {
-  const { patient, service } = exam;
+export const sendEmailResult = async (idPatient) => {
+  const getPatient = await findPatient(idPatient);
+  console.log(getPatient);
+
   const transporter = createTransport({
     host: 'smtp.gmail.com',
     port: 465,
@@ -24,17 +23,17 @@ export const sendEmailResult = async (exam) => {
 
   await transporter.sendMail({
     from: 'CLINIC',
-    to: 'falvarezl@autonoma.edu.pe', //colocar el email del patient
+    to: 'jore24@autonoma.edu.pe', //colocar el email del patient getPatient.email <-------------------
     subject: 'Check your CLINIC RESULTS',
-    text: 'Check your CLINIC account',
-    html: `<p>Hello: ${service}, check your RESULTS IN THE CLINIC.</p>
+    text: 'Results',
+    html: `<p>Hello: ${getPatient.fullname}, check your RESULTS IN THE CLINIC.</p>
             <p>Te dejamos el PDF de los resultados</p>
         `,
     attachments: [
       {
         //enviar pdf
-        filename: +timeHoy + '_' + patient + '.pdf',
-        path: './public/PDF/'+timeHoy + '_'+ patient+'.pdf',
+        filename: +timeHoy + '_' + idPatient + '.pdf',
+        path: './public/PDF/'+timeHoy + '_'+ idPatient+'.pdf',
         contentType: 'application/pdf',
       },
     ],
