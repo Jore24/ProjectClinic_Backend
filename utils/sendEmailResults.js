@@ -4,6 +4,7 @@ import { findPatient } from '../services/patient.js';
 
 const timeHoy = fecha();
 
+
 export const sendEmailResult = async (idPatient) => {
   const getPatient = await findPatient(idPatient);
   console.log(getPatient);
@@ -23,7 +24,7 @@ export const sendEmailResult = async (idPatient) => {
 
   await transporter.sendMail({
     from: 'CLINIC',
-    to: 'jore24@autonoma.edu.pe', //colocar el email del patient getPatient.email <-------------------
+    to: 'jhono@autonoma.edu.pe', //colocar el email del patient getPatient.email <-------------------
     subject: 'Check your CLINIC RESULTS',
     text: 'Results',
     html: `<p>Hello: ${getPatient.fullname}, check your RESULTS IN THE CLINIC.</p>
@@ -32,7 +33,7 @@ export const sendEmailResult = async (idPatient) => {
     attachments: [
       {
         //enviar pdf
-        filename: +timeHoy + '_' + idPatient + '.pdf',
+        filename: timeHoy + '_' + idPatient + '.pdf',
         path: './public/PDF/'+timeHoy + '_'+ idPatient+'.pdf',
         contentType: 'application/pdf',
       },

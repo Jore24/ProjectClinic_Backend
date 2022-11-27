@@ -3,8 +3,10 @@ import fs from 'fs';
 import { findPatient } from '../services/patient.js';
 import { findUserDoctor } from '../services/user.js';
 import { fecha } from './generateTime.js';
+import { get } from 'http';
 
 const timeHoy = fecha();
+
 
 export const exportPDF = async (data) => {
   const { patient, doctor } = data;
@@ -13,11 +15,10 @@ export const exportPDF = async (data) => {
   //console.log(getPatient)
   //console.log(getDoctor)
   //console.log(data)
-
   const doc = new PDFDocument();
 
   // Saving the pdf file in root directory.
-  doc.pipe(fs.createWriteStream('public/PDF/' + timeHoy + '_' + patient + '.pdf'));
+  doc.pipe(fs.createWriteStream('public/PDF/' + timeHoy + '_' + patient +  '.pdf'));
 
   // Adding an image in the pdf.
   try {
@@ -28,30 +29,30 @@ export const exportPDF = async (data) => {
 
 
   // Primer cuadro
-  doc.fontSize(11).text(' Paciente: '+ getPatient.fullname, 20, 260);
-  doc.fontSize(11).text(' DNI: '+ getPatient.documentNumber, 20, 276);
-  doc.fontSize(11).text('Sexo: MASCULINO', 20, 292);
+  doc.fontSize(11).text('Paciente: '+ getPatient.fullname, 20, 260);
+  doc.fontSize(11).text('DNI: '+ getPatient.documentNumber, 20, 276);
+  doc.fontSize(11).text('Sexo: ' +getPatient.sex, 20, 292);
   doc.fontSize(11).text('Médico: '+ getDoctor.doctor.fullname, 20, 308);
-  doc.fontSize(11).text('Servicio: DOMICILIO', 20, 324);
+  doc.fontSize(11).text('Servicio: '+data.service, 20, 324);
 
-  doc.fontSize(11).text('Historia: 4564745', 190, 276);
-  doc.fontSize(11).text('Edad: 32', 190, 292);
-  doc.fontSize(11).text('F.N.: 24/11/2022', 190, 308);
+  doc.fontSize(11).text('Historia: ', 190, 276);
+  doc.fontSize(11).text('Edad: '+getPatient.age, 190, 292);
+  //doc.fontSize(11).text('F.N.: '+getPatient.birthDate, 190, 308);(falta hacer el formato de fecha)
 
   doc.fontSize(11).text('Prioridad: 1', 325, 260);
   doc.fontSize(11).text('Pasaporte: SI', 325, 276);
-  doc.fontSize(11).text('Cliente: PARTICULAR)', 325, 292);
-  doc.fontSize(11).text('Localidad: SURCO', 325, 308);
-  doc.fontSize(11).text('Fecha de Toma de Muestra: 22/11/2022', 325, 324,);
+  doc.fontSize(11).text('Cliente: PARTICULAR', 325, 292);
+  doc.fontSize(11).text('Localidad: '+getPatient.location, 325, 308);
+  //doc.fontSize(11).text('Fecha de Toma de Muestra: '+data.date, 325, 324,);(falta hacer el formato de fecha)
 
   //Segundo cuadro
   doc.fontSize(10).text('EXAMENES REALIZADOS', 72, 360);
   doc.fontSize(10).text('CORONAVIRUS SARS COVI-2 PRUEBA ANTIGENO', 15, 372);
-  doc.fontSize(10).text('(Metódo: INMUNOCROMATOGRAFIA)', 50, 385);
-  doc.fontSize(10).text('TIPO DE MUESTRA: HISOPADO NASOFARINGEO', 20, 446);
+  doc.fontSize(10).text('(Metódo: '+data.method+')', 50, 385);
+  doc.fontSize(10).text('TIPO DE MUESTRA: '+data.sample, 20, 446);
 
   doc.fontSize(10).text('RESULTADO ACTUAL', 265, 360);
-  doc.fontSize(10).text('POSITIVO', 286, 455);
+  doc.fontSize(10).text(data.result, 286, 455);
 
   doc.fontSize(10).text('VALOR REFERENCIAL', 405, 360);
   doc.fontSize(10).text('*Esta prueba es cualitativa,detecta la presencia o ausencia de antigeno del virus SARS-CoV-2 conocido como (COVID-19). Un resultado Positivo indica alta posibilidad de estar en la fase ACTIVA de la enfermedad. La interprentaciòn del resultado debe hacerla el mèdico especialista basada en la informaciòn clìnica del paciente ', 385, 380);

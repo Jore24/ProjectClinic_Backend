@@ -4,4 +4,5 @@ export const fecha = () => {
   const dateHoy = hoy.toLocaleDateString();
   const fecha = dateHoy.split('/').join('-');
   return fecha;
+  
 };
