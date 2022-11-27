@@ -7,7 +7,6 @@ const timeHoy = fecha();
 
 export const sendEmailResult = async (idPatient) => {
   const getPatient = await findPatient(idPatient);
-  console.log(getPatient);
 
   const transporter = createTransport({
     host: 'smtp.gmail.com',
@@ -24,7 +23,7 @@ export const sendEmailResult = async (idPatient) => {
 
   await transporter.sendMail({
     from: 'CLINIC',
-    to: 'jhono@autonoma.edu.pe', //colocar el email del patient getPatient.email <-------------------
+    to: 'jore24@autonoma.edu.pe', //colocar el email del patient getPatient.email <-------------------
     subject: 'Check your CLINIC RESULTS',
     text: 'Results',
     html: `<p>Hello: ${getPatient.fullname}, check your RESULTS IN THE CLINIC.</p>

@@ -12,7 +12,7 @@ export const createPatient = async (dataPatient, idUser) => {
 };
 
 export const listPatients = async () => {
-  const patients = await Patient.find();
+  const patients = await Patient.find().populate('user', 'email');
   return patients;
 };
 
