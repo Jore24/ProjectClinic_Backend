@@ -15,9 +15,9 @@ export const listPatients = async () => {
   const patients = await Patient.find().populate('user', 'email');
   return patients;
 };
-
-export const listPatient = async id => {
-  const patient = await Patient.findById(id);
+//cambio de Fronted
+export const listPatient = async (id) => {
+  const patient = await Patient.findById(id).populate('user', 'email');
   return patient;
 };
 

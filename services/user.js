@@ -16,6 +16,11 @@ export const findUserByKey = async key => {
   return user;
 };
 
+export const delUser = async id => {
+  const user = await User.findByIdAndDelete(id);
+  return user;
+}
+
 export const createUser = async (email, password) => {
   const user = new User({ email, password });
   user.password = hashPassword(password);
@@ -23,7 +28,8 @@ export const createUser = async (email, password) => {
 };
 
 export const findUser = async id => {
-  const user = await User.findById(id);
+  const user = await User.findOne(id);
+  console.log(user);
   return user;
 };
 export const findUserProfile = async id => {
