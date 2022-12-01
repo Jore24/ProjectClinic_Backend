@@ -28,15 +28,9 @@ export const createUser = async (email, password) => {
 };
 
 export const findUser = async id => {
-  const user = await User.findOne(id);
-  return user;
-};
-
-export const findUser2 = async id => {
   const user = await User.findById(id);
   return user;
 };
-
 
 export const findUserProfile = async id => {
   const user = await User.findById(id).populate('patient').populate('doctor').select('-password');
