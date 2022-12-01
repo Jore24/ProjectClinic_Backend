@@ -1,15 +1,15 @@
 import { createTransport } from 'nodemailer';
 import { fecha } from './generateTime.js';
 import { findPatient } from '../services/patient.js';
-import { findUser2 } from '../services/user.js';
+import { findUser } from '../services/user.js';
 
 const timeHoy = fecha();
 
 
 export const sendEmailResult = async (idPatient) => {
   const getPatient = await findPatient(idPatient);
-  const getUser = await findUser2(getPatient.user)
-  console.log(getUser);
+  const getUser = await findUser(getPatient.user)
+
 
   const transporter = createTransport({
     host: 'smtp.gmail.com',
