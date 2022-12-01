@@ -1,12 +1,15 @@
 import { createTransport } from 'nodemailer';
 import { fecha } from './generateTime.js';
 import { findPatient } from '../services/patient.js';
+import { findUser2 } from '../services/user.js';
 
 const timeHoy = fecha();
 
 
 export const sendEmailResult = async (idPatient) => {
   const getPatient = await findPatient(idPatient);
+  const getUser = await findUser2(getPatient.user)
+  console.log(getUser);
 
   const transporter = createTransport({
     host: 'smtp.gmail.com',
@@ -23,7 +26,7 @@ export const sendEmailResult = async (idPatient) => {
 
   await transporter.sendMail({
     from: 'CLINIC',
-    to: 'jore24@autonoma.edu.pe', //colocar el email del patient getPatient.email <-------------------
+    to: getUser.email, //colocar el email del patient getPatient.email <-------------------
     subject: 'Check your CLINIC RESULTS',
     text: 'Results',
     html: `<p>Hello: ${getPatient.fullname}, check your RESULTS IN THE CLINIC.</p>
