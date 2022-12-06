@@ -1,11 +1,28 @@
-import { createUser, findUserByEmail, findUsers } from '../services/user.js';
+import { createUser, findUserByEmail, findUserProfile, findUsers, findUserByKey, findUser } from '../services/user.js';
 import { createPatient } from '../services/patient.js';
 import { createDoctor } from '../services/doctor.js';
-import { findUser } from '../services/user.js';
 import { tokenSign } from '../utils/createJwt.js';
 import { handleHttpError, handleErrorResponse } from '../utils/handleError.js';
 import { comparePassword } from '../utils/encrypt.js';
 import { sendEmail } from '../utils/sendEmail.js';
+
+const profileUser = async (req, res) => {
+  try {
+    const id = req.id;
+    const user = await findUserProfile(id);
+    console.log(user.role);
+
+    return res.status(200).json({
+      hasError: false,
+      user,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      hasError: true,
+      msg: 'Error in the server',
+    });
+  }
+};
 
 const userPatientRegister = async (req, res) => {
   const { email, password, ...dataPatient } = req.body;
@@ -30,7 +47,7 @@ const userPatientRegister = async (req, res) => {
 
     await sendEmail(user.email, patient.fullname, user.key);
 
-    res.json({
+    return res.json({
       hasError: false,
       uid: user.id,
       fullname: patient.fullname,
@@ -38,7 +55,7 @@ const userPatientRegister = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    res.status(400).json({
+    return res.status(400).json({
       hasError: true,
       msg: 'Error in the server',
     });
@@ -67,7 +84,7 @@ const userDoctorRegister = async (req, res) => {
 
     doctor.save();
     user.save();
-
+    await sendEmail(user.email, doctor.fullname, user.key);
     res.json({
       hasError: false,
       uid: user.id,
@@ -75,7 +92,6 @@ const userDoctorRegister = async (req, res) => {
       msg: 'User created successfully',
     });
   } catch (error) {
-    console.log(error);
     res.status(400).json({
       hasError: true,
       msg: 'Error in the server',
@@ -98,6 +114,7 @@ const userLogin = async (req, res) => {
     if (!check) {
       return handleErrorResponse(res, 'Password not correct', 402);
     }
+    //validar si es activo o no está acctivo el email
 
     const tokenJwt = await tokenSign(user);
 
@@ -114,40 +131,47 @@ const userLogin = async (req, res) => {
   }
 };
 
-const confirmAccount = async (req, res) => {
+const userConfirm = async (req, res) => {
   const { key } = req.params;
 
-  const user = await findUserByKey(key);
-  // key = 12512341
+  try {
+    const user = await findUserByKey(key);
+    if (!user) {
+      return res.status(400).json({
+        hasError: true,
+        msg: 'El usuario no existe',
+      });
+    }
 
-  if (!user) {
-    return res.status(400).json({
+    user.isActive = true;
+    user.key = null;
+    await user.save();
+
+    return res.json({
+      hasError: false,
+      msg: 'Cuenta activada correctamente',
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({
       hasError: true,
-      msg: 'El key ya expiro',
+      msg: 'Error in the server',
     });
   }
-
-  user.isActive = true;
-  user.key = null;
-  await user.save();
-
-  return res.json({
-    hasError: false,
-    msg: 'Cuenta activada correctamente',
-  });
 };
 
 const getUser = async (req, res) => {
   try {
     const { id } = req.params;
     const roleLogged = req.role;
-    console.log(roleLogged);
-    const user = await findUser(id);
-
     if (roleLogged !== 'Doctor') {
       return handleErrorResponse(res, 'You are not authorized', 401);
     }
-
+    const user = await findUser(id);
+    res.status(200).json({
+      hasError: false,
+      user,
+    });
   } catch (error) {
     console.log(error);
     res.status(400).json({
@@ -158,6 +182,10 @@ const getUser = async (req, res) => {
 };
 const getUsers = async (req, res) => {
   try {
+    const roleLogged = req.role;
+    if (roleLogged !== 'Patient') {
+      return handleErrorResponse(res, 'You are not authorized', 401);
+    }
     const users = await findUsers(); //services
     res.send({ users });
   } catch (error) {
@@ -168,5 +196,22 @@ const getUsers = async (req, res) => {
     });
   }
 };
+const revalidateToken = async (req, res) => {
+  try {
+    const { id } = req;
+    const user = await findUser(id);
+    const tokenJwt = await tokenSign(user);
+    res.json({
+      token: tokenJwt,
+      user: user,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({
+      hasError: true,
+      msg: 'Error in the server',
+    });
+  }
+}
 
-export { userPatientRegister, userDoctorRegister, userLogin, getUser, getUsers };
+export { userPatientRegister, userDoctorRegister, userLogin, getUser, getUsers, profileUser, userConfirm, revalidateToken };

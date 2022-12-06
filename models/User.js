@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-
+import { key } from '../utils/generateKey.js';
 const UserSchema = new mongoose.Schema(
   {
     email: {
@@ -28,7 +28,7 @@ const UserSchema = new mongoose.Schema(
 
     key: {
       type: String,
-      default: 'asdasd',
+      default: key(),
     },
 
     patient: {
