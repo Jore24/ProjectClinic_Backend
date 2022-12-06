@@ -25,14 +25,12 @@ dbConnection();
 app.use(cors());
 app.use(express.json());
 
-
-
 app.use('/api/auth', authRouter);
 app.use('/api/patient', patientRouter);
 app.use('/api/doctor', doctorRouter);
 app.use('/api/exam', examRouter);
 
-<<<<<<< HEAD
+//websocket refactoring
 io.on('connection', async socket => {
   console.log('a user connected');
   //console.log(socket.id);
@@ -44,30 +42,12 @@ io.on('connection', async socket => {
         from: body.from,
         id: body.id,
       },
+      //services
       await new Chat({
         msg: body.body,
         fullname: body.from,
         user: body.id,
       }).save()
-=======
-//websocket refactoring
-io.on("connection", async (socket) => {
-  
-  console.log("a user connected");
-  //console.log(socket.id);
-  socket.on("message", async (body) => {
-    socket.broadcast.emit("message", {
-      body: body.body,
-      from: body.from,
-      id: body.id 
-    },
-    //services
-    await new Chat({
-      msg: body.body,
-      fullname: body.from,
-      user: body.id,
-    }).save()
->>>>>>> main
     );
     let id = body.id;
     console.log('id', id);
