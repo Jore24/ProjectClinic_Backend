@@ -2,7 +2,7 @@ import { User } from '../models/index.js';
 import { hashPassword } from '../utils/encrypt.js';
 
 export const findUserByEmail = async email => {
-  const user = await User.findOne({ email }).populate("patient");
+  const user = await User.findOne({ email }).populate("patient").populate("doctor");
   return user;
 };
 
