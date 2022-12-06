@@ -17,7 +17,7 @@ const registerExam = async (req, res) => {
     
     const add = await addExam(idDoctor, idPatient, dataPatient);
     exportPDF(add)
-    sendEmailResult(idPatient)
+    sendEmailResult(idPatient, idDoctor)
 
     return res.json({
       hasError: false,

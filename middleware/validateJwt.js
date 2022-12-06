@@ -3,13 +3,13 @@ import { verifyToken } from '../utils/createJwt.js';
 
 const checkAuth = async (req, res, next) => {
   try {
-    console.log(req.headers.authorization)
+    //console.log(req.headers.authorization)
     if (!req.headers.authorization) {
       handleErrorResponse(res, 'Not token', 409);
       return;
     }
     const token = req.headers.authorization.split(' ').pop();
-    console.log(token);
+    //console.log(token);
     const tokenData = await verifyToken(token);
 
     //agregado por que si no se rompe el codigo

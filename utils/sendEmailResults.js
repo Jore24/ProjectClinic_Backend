@@ -1,14 +1,18 @@
 import { createTransport } from 'nodemailer';
 import { fecha } from './generateTime.js';
 import { findPatient } from '../services/patient.js';
-import { findUser } from '../services/user.js';
+import { findUser, findUserDoctor } from '../services/user.js';
+
 
 const timeHoy = fecha();
 
 
-export const sendEmailResult = async (idPatient) => {
+export const sendEmailResult = async (idPatient, idDoctor) => {
   const getPatient = await findPatient(idPatient);
   const getUser = await findUser(getPatient.user)
+  const getDoctor = await findUserDoctor(idDoctor) //getDoctor.email desde aquí
+
+
 
 
   const transporter = createTransport({
@@ -44,7 +48,7 @@ export const sendEmailResult = async (idPatient) => {
 
   await transporter.sendMail({
     from: 'CLINIC',
-    to: 'correo@example', // colocar el correo de un doctor
+    to: getDoctor.email,
     subject: 'RESULTADO DEL PACIENTE '+getPatient.fullname,
     text: 'Resultados',
     html: `<p>Aquí puede verificar los resultados del paciente ${getPatient.fullname}.</p>
