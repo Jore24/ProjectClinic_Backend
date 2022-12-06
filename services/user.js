@@ -7,7 +7,11 @@ export const findUserDoctor = async idUser => {
 };
 
 export const findUserByEmail = async email => {
+<<<<<<< HEAD
+  const user = await User.findOne({ email }).populate("patient").populate("doctor");
+=======
   const user = await User.findOne({ email }).populate('patient').populate('doctor');
+>>>>>>> main
   return user;
 };
 
