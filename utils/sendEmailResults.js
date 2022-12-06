@@ -26,11 +26,29 @@ export const sendEmailResult = async (idPatient) => {
 
   await transporter.sendMail({
     from: 'CLINIC',
-    to: getUser.email, //colocar el email del patient getPatient.email <-------------------
-    subject: 'Check your CLINIC RESULTS',
-    text: 'Results',
-    html: `<p>Hello: ${getPatient.fullname}, check your RESULTS IN THE CLINIC.</p>
-            <p>Te dejamos el PDF de los resultados</p>
+    to: getUser.email,  //colocar el email del patient getPatient.email <-------------------
+    subject: 'RESULTADOS DEL LABORATORIO CLÍNICO HERNANDEZ',
+    text: 'Resultados',
+    html: ` <p>Hola ${getPatient.fullname}, chequea tus RESULTADOS DEL LABORATORIO CLÍNICO.</p>
+            <p>Te dejamos el PDF de los resultados.</p>
+        ` ,
+    attachments: [
+      {
+        //enviar pdf
+        filename: timeHoy + '_' + idPatient + '.pdf',
+        path: './public/PDF/'+timeHoy + '_'+ idPatient+'.pdf',
+        contentType: 'application/pdf',
+      },
+    ],
+  });
+
+  await transporter.sendMail({
+    from: 'CLINIC',
+    to: 'ctitoh@autonoma.edu.pe',  //colocar el email del patient getPatient.email <-------------------
+    subject: 'RESULTADO DEL PACIENTE '+getPatient.fullname,
+    text: 'Resultados',
+    html: `<p>Aquí puede verificar los resultados del paciente ${getPatient.fullname}.</p>
+            <p>PDF de los resultados.</p>
         `,
     attachments: [
       {
@@ -41,5 +59,5 @@ export const sendEmailResult = async (idPatient) => {
       },
     ],
   });
-  //console.log('correo enviado');
+  // console.log('Email sent');
 };
