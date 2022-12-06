@@ -44,7 +44,7 @@ export const sendEmailResult = async (idPatient) => {
 
   await transporter.sendMail({
     from: 'CLINIC',
-    to: 'ctitoh@autonoma.edu.pe',  //colocar el email del patient getPatient.email <-------------------
+    to: 'correo@example', // colocar el correo de un doctor
     subject: 'RESULTADO DEL PACIENTE '+getPatient.fullname,
     text: 'Resultados',
     html: `<p>Aquí puede verificar los resultados del paciente ${getPatient.fullname}.</p>
